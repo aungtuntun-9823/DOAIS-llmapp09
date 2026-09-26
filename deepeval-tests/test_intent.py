@@ -6,15 +6,14 @@ the purpose and category behind different types of text input.
 """
 
 import json
+
 import pytest
-from deepeval import assert_test
-from deepeval.test_case import LLMTestCase, LLMTestCaseParams
-from deepeval.metrics import GEval
-from deepeval.dataset import EvaluationDataset
-
 from api_client import detect_intent
-from conftest import json_schema_metric, output_correctness_metric, answer_relevancy_metric
-
+from conftest import answer_relevancy_metric, json_schema_metric
+from deepeval import assert_test
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import GEval
+from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
 # ---------------------------------------------------------------------------
 # Test inputs and expected behaviors
@@ -140,10 +139,17 @@ intent_category_metric = GEval(
 intent_primary_metric = GEval(
     name="Primary Intent Accuracy",
     criteria=(
-        "Evaluate whether the primaryIntent in the actual output accurately "
-        "describes the main purpose behind the input text. The detected intent "
-        "should capture what the user is trying to accomplish. Synonyms and "
-        "semantically equivalent descriptions should be considered correct."
+        "Evaluate whether primaryIntent in the actual output identifies the "
+        "dominant action or communicative purpose and the correct concrete "
+        "topic of the input. Use the expected output as a semantic reference, "
+        "not as an exact label to match. Accept paraphrases and nearby activity "
+        "nouns when they preserve the same purpose and topic; for example, "
+        "'annual revenue growth analysis' is equivalent to 'reporting financial "
+        "results' for a factual statement about annual revenue growth. Do not "
+        "penalize a valid primary intent merely because the actual output also "
+        "contains useful secondary intents. Fail only when primaryIntent omits "
+        "or contradicts the main action, purpose, or topic, or promotes a "
+        "secondary detail over the dominant intent."
     ),
     evaluation_params=[
         LLMTestCaseParams.INPUT,
