@@ -79,6 +79,7 @@ jobs:
           image-ref: aungtuntun/llm-frontend-python:scan
           format: 'table'
           exit-code: '1'
+          ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
           trivyignores: .trivyignore
 

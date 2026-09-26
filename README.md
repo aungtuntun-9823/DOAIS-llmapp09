@@ -4,6 +4,25 @@ This standalone repository loads local configuration from `.env` and uses a
 dedicated Python 3.11 environment in `.venv`. GitHub Actions reads credentials
 from repository secrets; credentials are never added to the Docker images.
 
+## GitHub Actions secrets
+
+GitHub Actions secrets belong to one repository and are not copied from the
+original `DOAIS` repository. In the standalone repository, open **Settings >
+Secrets and variables > Actions** and add:
+
+- `OLLAMA_API_KEY` — required by the backend, PromptFoo, and DeepEval workflows.
+- `OPENAI_API_KEY` — required by DeepEval's `GEval` metrics.
+- `DOCKERHUB_TOKEN` — required to push the two images to Docker Hub on a branch
+  push. Use a Docker Hub access token, not your account password.
+
+`OLLAMA_BASE_URL` is optional and defaults to `https://ollama.com`. The three
+`LANGFUSE_*` secrets are optional and enable tracing when configured:
+`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST`.
+
+The image workflows fail for fixable HIGH or CRITICAL vulnerabilities. They
+ignore findings that do not yet have an upstream fix, matching the documented
+local Trivy scan behavior.
+
 Create the local environment and configuration file:
 
 ```bash

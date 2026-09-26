@@ -34,6 +34,13 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Validate required secrets
+        run: |
+          if [ -z "$OLLAMA_API_KEY" ]; then
+            echo "::error::OLLAMA_API_KEY is not configured for this repository."
+            exit 1
+          fi
+
       - name: Build and start backend
         run: |
           docker compose up -d llm-multiroute
@@ -70,6 +77,10 @@ jobs:
       - name: Run PromptFoo intent evaluation
         working-directory: promptfoo-tests
         run: npx promptfoo@latest eval -c intent.yaml
+
+      - name: Show backend logs after a failure
+        if: failure()
+        run: docker compose logs --no-color llm-multiroute
 
       - name: Tear down backend
         if: always()
