@@ -1,0 +1,13 @@
+.venv/
+venv/
+**/.venv/
+**/venv/
+.env
+**/.env
+**/__pycache__/
+**/.pytest_cache/
+*.py[cod]
+.deepeval/
+.DS_Store
+.idea/
+node_modules/
