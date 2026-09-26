@@ -52,6 +52,21 @@ jobs:
             echo "::error::OPENAI_API_KEY is not configured for this repository."
             exit 1
           fi
+          python - <<'PY'
+          import os
+
+          key = os.environ["OPENAI_API_KEY"].strip()
+          if not key.startswith("sk-"):
+              raise SystemExit(
+                  "::error::OPENAI_API_KEY must contain only the raw key beginning with sk-."
+              )
+          if any(ord(character) < 33 or ord(character) > 126 for character in key):
+              raise SystemExit(
+                  "::error::OPENAI_API_KEY contains an unsupported control or non-ASCII character."
+              )
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env_file:
+              env_file.write(f"OPENAI_API_KEY={key}\n")
+          PY
 
       - name: Build and start backend
         run: docker compose up -d llm-multiroute

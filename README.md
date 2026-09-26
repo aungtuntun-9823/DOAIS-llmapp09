@@ -17,6 +17,8 @@ Secrets and variables > Actions** and add:
 
 Save each secret as its raw, single-line value. Do not include an `export`
 command, the variable name, surrounding quotes, or extra line breaks.
+The DeepEval workflow trims accidental leading or trailing whitespace and
+rejects other control characters before running the paid model evaluations.
 
 `OLLAMA_BASE_URL` is optional and defaults to `https://ollama.com`. The three
 `LANGFUSE_*` secrets are optional and enable tracing when configured:
