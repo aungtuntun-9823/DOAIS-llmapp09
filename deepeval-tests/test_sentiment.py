@@ -6,15 +6,14 @@ labels, scores, emotions, and properly structured responses.
 """
 
 import json
+
 import pytest
-from deepeval import assert_test
-from deepeval.test_case import LLMTestCase, LLMTestCaseParams
-from deepeval.metrics import GEval
-from deepeval.dataset import EvaluationDataset
-
 from api_client import analyze_sentiment
-from conftest import json_schema_metric, output_correctness_metric, answer_relevancy_metric
-
+from conftest import json_schema_metric
+from deepeval import assert_test
+from deepeval.dataset import EvaluationDataset
+from deepeval.metrics import GEval
+from deepeval.test_case import LLMTestCase, LLMTestCaseParams
 
 # ---------------------------------------------------------------------------
 # Test inputs and expected behaviors
@@ -149,7 +148,24 @@ sentiment_emotion_metric = GEval(
     threshold=0.6,
 )
 
-sentiment_relevancy_metric = answer_relevancy_metric()
+sentiment_relevancy_metric = GEval(
+    name="Sentiment Analysis Relevancy",
+    criteria=(
+        "Evaluate whether the actual output is relevant to the task of analyzing "
+        "the input's emotional tone. A relevant response uses overallSentiment, "
+        "sentimentScore, emotions, and confidence to characterize that tone. It "
+        "does not need to summarize the input's topic, entities, schedule, or "
+        "actionable details. For factual text with no emotional language, a "
+        "neutral sentiment and an empty emotions list are directly relevant. "
+        "Penalize sentiment metadata only when it is unsupported by the input or "
+        "when the response discusses unrelated content."
+    ),
+    evaluation_params=[
+        LLMTestCaseParams.INPUT,
+        LLMTestCaseParams.ACTUAL_OUTPUT,
+    ],
+    threshold=0.5,
+)
 
 
 # ---------------------------------------------------------------------------
