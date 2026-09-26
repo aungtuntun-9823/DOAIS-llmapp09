@@ -15,6 +15,9 @@ Secrets and variables > Actions** and add:
 - `DOCKERHUB_TOKEN` — required to push the two images to Docker Hub on a branch
   push. Use a Docker Hub access token, not your account password.
 
+Save each secret as its raw, single-line value. Do not include an `export`
+command, the variable name, surrounding quotes, or extra line breaks.
+
 `OLLAMA_BASE_URL` is optional and defaults to `https://ollama.com`. The three
 `LANGFUSE_*` secrets are optional and enable tracing when configured:
 `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST`.
